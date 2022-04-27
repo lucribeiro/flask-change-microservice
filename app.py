@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import jsonify
+from flask import request
 app = Flask(__name__)
 
 def change(amount):
@@ -37,6 +38,28 @@ def changeroute(dollar, cents):
     amount = f"{dollar}.{cents}"
     result = change(float(amount))
     return jsonify(result)
+    
+@app.route('/change_mult/<dollar>/<cents>')
+def change_mult(dollar, cents):
+    print(f"This is the {dollar}.{cents} X 100")
+    amount = f"{dollar}.{cents}"
+    result = 100*float(amount)
+    return jsonify(result)
+    
+@app.route('/change_post', methods=['POST'])
+def post_amount():
+    if request.method == 'POST':
+        data = request.get_json()
+        for key, item in data.items():
+            amount = float(item)
+            print(f"Make Change for {amount}")
+            
+            result = change(amount)
+            
+        return jsonify(result)
+    
+    else:
+        print("Method not allowed")
 
 
 if __name__ == '__main__':
